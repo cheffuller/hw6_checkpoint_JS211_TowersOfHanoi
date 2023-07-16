@@ -2,9 +2,9 @@ let stone = null;
 let startStack = null;
 let endStack = null;
 let stacks = {
-  'top-row': [],
-  'middle-row': [],
-  'bottom-row': [4, 3, 2, 1],
+  'left-tower': [],
+  'middle-tower': [4, 3, 2, 1],
+  'right-tower': []
 };
 
 const selectRow = (row) => {
@@ -54,7 +54,7 @@ const isLegal = (start, end) => {
 };
 
 const checkForWin = (end) => {
-  if (end != 'bottom-row' && stacks[end].toString() === "4,3,2,1") {
+  if (end != 'middle-tower' && stacks[end].toString() === "4,3,2,1") {
     return true;
   } else {
     return false;
