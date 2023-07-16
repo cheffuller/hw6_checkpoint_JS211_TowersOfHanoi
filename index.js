@@ -1,19 +1,19 @@
 let stone = null;
+let startStack = null;
+let endStack = null;
 let stacks = {
   'top-row': [],
   'middle-row': [],
   'bottom-row': [4, 3, 2, 1],
 };
-let startStack = null;
-let endStack = null;
 
 const selectRow = (row) => {
   const currentStone = row.lastElementChild;
-  console.log(stacks);
-  if (!stone) {
+  console.log(row, currentStone)
+  if (!stone && currentStone) {
     startStack = row.id;
     pickUpStone(currentStone);
-  } else {
+  } else if (stone) {
     endStack = row.id;
     movePiece(startStack, endStack);
   }
@@ -29,26 +29,12 @@ const dropStone = (row) => {
   stone = null;
 };
 
-const setStack = (rowID) => {
-  switch (rowID) {
-    case 'top-row':
-      return 'a'
-      break;
-    case 'middle-row':
-      return 'b'
-      break;
-    case 'bottom-row':
-      return 'c'
-      break;
-  }
-}
-
 const movePiece = (start, end) => {
   if (isLegal(start, end)) {
     stacks[end].push(stacks[start].pop());
     dropStone(document.querySelector(`#${end}`));
     if (checkForWin(end)) {
-      window.alert('You win!');
+      document.querySelector('#announce-game-won').innerHTML = "You Won!";
     };
   } else {
     dropStone(document.querySelector(`#${start}`));
@@ -63,15 +49,22 @@ const isLegal = (start, end) => {
   ) {
     return true;
   } else {
-    console.log('Display error message')
     return false;
   }
 };
 
 const checkForWin = (end) => {
-  if (stacks[end].toString() === "4,3,2,1") {
+  if (end != 'bottom-row' && stacks[end].toString() === "4,3,2,1") {
     return true;
   } else {
     return false;
   }
 };
+
+const rowElements = document.querySelectorAll('.row');
+rowElements.forEach((element) => {
+  console.log(element)
+  element.addEventListener('click', function () {
+    selectRow(this);
+  })
+});
