@@ -11,29 +11,31 @@ let stacks = {
 
 // function called when a row is clicked on.
 // it determines the actions to take based on if there is or is not a stone value.
-// const selectRow = (row) => {
-//   const currentStone = row.lastElementChild;
-//   if (!stone && currentStone) {
-//     startStack = row.id;
-//     pickUpStone(currentStone);
-//   } else if (stone) {
-//     endStack = row.id;
-//     movePiece(startStack, endStack);
-//   }
-// };
+const selectRow = (row) => {
+  const currentStone = row.lastElementChild;
+  if (!stone && currentStone) {
+    startStack = row.id;
+    pickUpStone(currentStone);
+  } else if (stone) {
+    endStack = row.id;
+    movePiece(startStack, endStack);
+  }
+};
 
 // function that assigns the stone value to the selected row's top stone
 // and then removes the stone element from the html.
-// const pickUpStone = (currentStone) => {
-//   stone = currentStone;
-//   currentStone.remove();
-// };
+const pickUpStone = (currentStone) => {
+  stone = currentStone;
+  currentStone.remove();
+  changeDraggable('false');
+};
 
 // function that adds the stone element to the html of the selected row
 // and then clears the stone value.
 const dropStone = (row) => {
   row.append(stone);
   stone = null;
+  changeDraggable('true');
 };
 
 // function to move a stone from one row to another if the move is legal
@@ -75,24 +77,24 @@ const checkForWin = (end) => {
 };
 
 // function that adds the click event listener to the reset game button
-const clickResetButton = () => {
+const resetButtonListeners = () => {
   const resetButton = document.querySelector(".reset-button");
   resetButton.addEventListener("click", function () {
     location.reload();
   });
 };
 
-// The functions below handle the drag events, allowing the stones to be moved by dragging
-// from one tower to another
+// The functions below handle the drag events, allowing the stones to be 
+// moved by dragging from one tower to another
 
 // function that adds the click, dragover, and drop event listeners
 //  to each of the tower row elements
 const rowElementListeners = () => {
   const rowElements = document.querySelectorAll(".row");
   rowElements.forEach((element) => {
-    // element.addEventListener("click", function () {
-    //   selectRow(this);
-    // });
+    element.addEventListener("click", function () {
+      selectRow(this);
+    });
     element.addEventListener("drop", (e) => {
       drop_handler(e);
     });
@@ -109,9 +111,15 @@ const dragElementListeners = () => {
     element.addEventListener("dragstart", (e) => {
       dragstart_handler(e);
     });
-    // element.addEventListener("dragend", () => {
-    //   dragend_handler();
-    // });
+  });
+};
+
+// function to toggle "draggable" attribute on or off, depending on 
+// if a stone is picked up with a click event
+const changeDraggable = (boolValue) => {
+  const stoneElements = document.querySelectorAll(".stone");
+  stoneElements.forEach((element) => {
+    element.setAttribute("draggable", boolValue);
   });
 };
 
@@ -123,10 +131,6 @@ function dragstart_handler(ev) {
   ev.dataTransfer.effectAllowed = "move";
 }
 
-// function dragend_handler() {
-//   stone = null;
-// }
-
 // function to handle dragging a stone over a different tower
 function dragover_handler(ev) {
   ev.preventDefault();
@@ -137,14 +141,15 @@ function dragover_handler(ev) {
 function drop_handler(ev) {
   ev.preventDefault();
   endStack = ev.target.id;
-  if (testStone(stone, startStack)) {
+  if (ifStoneIsDraggable(stone, startStack)) {
     movePiece(startStack, endStack);
   }
+  stone = null;
 }
 
 // function to test if the stone is the last element in the array corresponding
 // to the starting tower row
-const testStone = (stone, start) => {
+const ifStoneIsDraggable = (stone, start) => {
   if (stacks[start][stacks[start].length - 1] === parseInt(stone.id)) {
     return true;
   } else {
@@ -154,4 +159,4 @@ const testStone = (stone, start) => {
 
 dragElementListeners();
 rowElementListeners();
-clickResetButton();
+resetButtonListeners();
