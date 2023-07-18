@@ -11,23 +11,23 @@ let stacks = {
 
 // function called when a row is clicked on.
 // it determines the actions to take based on if there is or is not a stone value.
-const selectRow = (row) => {
-  const currentStone = row.lastElementChild;
-  if (!stone && currentStone) {
-    startStack = row.id;
-    pickUpStone(currentStone);
-  } else if (stone) {
-    endStack = row.id;
-    movePiece(startStack, endStack);
-  }
-};
+// const selectRow = (row) => {
+//   const currentStone = row.lastElementChild;
+//   if (!stone && currentStone) {
+//     startStack = row.id;
+//     pickUpStone(currentStone);
+//   } else if (stone) {
+//     endStack = row.id;
+//     movePiece(startStack, endStack);
+//   }
+// };
 
 // function that assigns the stone value to the selected row's top stone
 // and then removes the stone element from the html.
-const pickUpStone = (currentStone) => {
-  stone = currentStone;
-  currentStone.remove();
-};
+// const pickUpStone = (currentStone) => {
+//   stone = currentStone;
+//   currentStone.remove();
+// };
 
 // function that adds the stone element to the html of the selected row
 // and then clears the stone value.
@@ -87,12 +87,12 @@ const clickResetButton = () => {
 
 // function that adds the click, dragover, and drop event listeners
 //  to each of the tower row elements
-const clickRowElements = () => {
+const rowElementListeners = () => {
   const rowElements = document.querySelectorAll(".row");
   rowElements.forEach((element) => {
-    element.addEventListener("click", function () {
-      selectRow(this);
-    });
+    // element.addEventListener("click", function () {
+    //   selectRow(this);
+    // });
     element.addEventListener("drop", (e) => {
       drop_handler(e);
     });
@@ -103,22 +103,29 @@ const clickRowElements = () => {
 };
 
 // function to add event listeners to the draggable elements
-const dragStartElements = () => {
+const dragElementListeners = () => {
   const stoneElements = document.querySelectorAll(".stone");
   stoneElements.forEach((element) => {
     element.addEventListener("dragstart", (e) => {
       dragstart_handler(e);
     });
+    // element.addEventListener("dragend", () => {
+    //   dragend_handler();
+    // });
   });
 };
 
 // function to handle the start of a dragging event
 function dragstart_handler(ev) {
-  ev.dataTransfer.setData("application/my-app", ev.target.id);
-  ev.dataTransfer.effectAllowed = "move";
   startStack = ev.target.parentElement.id;
   stone = ev.target;
+  ev.dataTransfer.setData("application/my-app", ev.target.id);
+  ev.dataTransfer.effectAllowed = "move";
 }
+
+// function dragend_handler() {
+//   stone = null;
+// }
 
 // function to handle dragging a stone over a different tower
 function dragover_handler(ev) {
@@ -130,21 +137,21 @@ function dragover_handler(ev) {
 function drop_handler(ev) {
   ev.preventDefault();
   endStack = ev.target.id;
-  if (testStack(stone, startStack)) {
+  if (testStone(stone, startStack)) {
     movePiece(startStack, endStack);
   }
 }
 
 // function to test if the stone is the last element in the array corresponding
 // to the starting tower row
-const testStack = (stone, start) => {
-  if (stacks[start][stacks[start].length - 1] == stone.id) {
+const testStone = (stone, start) => {
+  if (stacks[start][stacks[start].length - 1] === parseInt(stone.id)) {
     return true;
   } else {
     return false;
   }
 };
 
-dragStartElements();
-clickRowElements();
+dragElementListeners();
+rowElementListeners();
 clickResetButton();
