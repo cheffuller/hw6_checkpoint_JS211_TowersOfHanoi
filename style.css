@@ -47,6 +47,10 @@ font-size: 16px;
   height: 180px;
   width: 45px;
   margin: 50px;
+}
+
+[data-row],
+[data-color] {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -71,16 +75,12 @@ font-size: 16px;
 [data-color] {
   height: 30px;
   border-radius: 3px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
 [data-color="red"] {
   height: 20px;
   width: 80px;
   background-image: url(img/ring-red.png);
-
 }
 
 [data-color="orange"] {
@@ -104,6 +104,9 @@ font-size: 16px;
 #announce-game-won {
   font-size: 32px;
   height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .instructions {

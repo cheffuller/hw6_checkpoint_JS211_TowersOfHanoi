@@ -27,15 +27,19 @@ const selectRow = (row) => {
 const pickUpStone = (currentStone) => {
   stone = currentStone;
   currentStone.remove();
+  document.querySelector("#announce-game-won").append(stone);
   changeDraggable('false');
+  document.body.style.cursor = "copy";
 };
 
 // function that adds the stone element to the html of the selected row
 // and then clears the stone value.
 const dropStone = (row) => {
+  document.querySelector("#announce-game-won").innerHTML = null;
   row.append(stone);
   stone = null;
   changeDraggable('true');
+  document.body.style.cursor = "auto";
 };
 
 // function to move a stone from one row to another if the move is legal
@@ -56,28 +60,17 @@ const movePiece = (start, end) => {
 // function to check the stacks array to determine if the move is legal or
 // not based on the stone size.
 const isLegal = (start, end) => {
-  if (
-    stacks[end][stacks[end].length - 1] === undefined ||
-    stacks[start][stacks[start].length - 1] <
-      stacks[end][stacks[end].length - 1]
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+  return (stacks[end][stacks[end].length - 1] === undefined ||
+    stacks[start][stacks[start].length - 1] < stacks[end][stacks[end].length - 1])
 };
 
 // function to check if the winning conditions have been met.
 const checkForWin = (end) => {
-  if (end != "middle-tower" && stacks[end].toString() === "4,3,2,1") {
-    return true;
-  } else {
-    return false;
-  }
+  return (end != "middle-tower" && stacks[end].toString() === "4,3,2,1")
 };
 
 // function that adds the click event listener to the reset game button
-const resetButtonListeners = () => {
+const resetButtonListener = () => {
   const resetButton = document.querySelector(".reset-button");
   resetButton.addEventListener("click", function () {
     location.reload();
@@ -141,7 +134,7 @@ function dragover_handler(ev) {
 function drop_handler(ev) {
   ev.preventDefault();
   endStack = ev.target.id;
-  if (ifStoneIsDraggable(stone, startStack)) {
+  if (stoneIsDraggable(stone, startStack)) {
     movePiece(startStack, endStack);
   }
   stone = null;
@@ -149,14 +142,10 @@ function drop_handler(ev) {
 
 // function to test if the stone is the last element in the array corresponding
 // to the starting tower row
-const ifStoneIsDraggable = (stone, start) => {
-  if (stacks[start][stacks[start].length - 1] === parseInt(stone.id)) {
-    return true;
-  } else {
-    return false;
-  }
+const stoneIsDraggable = (stone, start) => {
+  return (stacks[start][stacks[start].length - 1] === parseInt(stone.id))
 };
 
 dragElementListeners();
 rowElementListeners();
-resetButtonListeners();
+resetButtonListener();
